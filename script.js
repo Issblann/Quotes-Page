@@ -6,11 +6,14 @@ const containerLoader = document.querySelector(".container-loader");
 const buttonQuote = document.querySelector(".button-quote");
 let indiceText = 0;
 let indiceAuthor = 0;
+let quotes = [];
 
 const getData = async () => {
-  const quotesAndAuthors = await requestQuote();
-  const quoteTexts = quotesAndAuthors.map((quote) => `"${quote.text}"`);
-  const quoteAuthor = quotesAndAuthors.map((author) => `-${author.author}`);
+  if (quotes.length === 0) {
+    quotes = await requestQuote();
+  }
+  const quoteTexts = quotes.map((quote) => `"${quote.text}"`);
+  const quoteAuthor = quotes.map((author) => `-${author.author}`);
   return { quoteTexts, quoteAuthor };
 };
 const showLoader = () => {
@@ -24,18 +27,9 @@ const handleGetData = () => {
   getData()
     .then((data) => {
       const { quoteTexts, quoteAuthor } = data;
-
-      containerQuotes.innerHTML = quoteTexts[indiceText];
-      indiceText++;
-      if (indiceText >= quoteTexts.length) {
-        indiceText = 0;
-      }
-
-      containerAuthor.innerHTML = quoteAuthor[indiceAuthor];
-      indiceAuthor++;
-      if (indiceAuthor >= quoteAuthor.length) {
-        indiceAuthor = 0;
-      }
+      const randomIndex = Math.floor(Math.random() * quoteTexts.length);
+      containerQuotes.innerHTML = quoteTexts[randomIndex];
+      containerAuthor.innerHTML = quoteAuthor[randomIndex];
     })
     .catch((error) => {
       console.error(error);
